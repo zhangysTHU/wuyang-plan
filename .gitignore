@@ -1,0 +1,14 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+.env*
+!.env.example
+*.local
+data/*
+!data/demo/
+data/demo/*
+!data/demo/病历/
+docs/
+毫米波雷达检测系统/
+参考app中检测到的生命体征/

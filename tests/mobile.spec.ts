@@ -1,0 +1,23 @@
+import { expect, test } from '@playwright/test'
+
+test('subject can view only their own demonstration data and use the mobile navigation', async ({ page }) => {
+  await page.goto('/me/sleep?night=P001-20261121-sim')
+  await page.getByLabel('演示身份').selectOption('P003')
+  await page.getByRole('button', { name: '进入工作台' }).click()
+  await expect(page.getByText('无法读取此监测记录')).toBeVisible({ timeout: 30_000 })
+  await page.getByRole('button', { name: '查看最近一晚' }).click()
+  await expect(page.getByRole('heading', { name: '睡眠结构' })).toBeVisible()
+  await expect(page.getByRole('img', { name: /心率折线图/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: '导入 2 秒 CSV' })).toHaveCount(0)
+  await expect(page.getByLabel('监测夜晚').locator('option')).toHaveCount(7)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
+  await page.reload()
+  await expect(page.getByRole('heading', { name: '睡眠监测', exact: true })).toBeVisible()
+  await page.getByRole('button', { name: '打开菜单' }).click()
+  await page.getByRole('link', { name: '健康报告', exact: true }).click()
+  await expect(page.getByText('分析服务待接入')).toBeVisible()
+  await page.goto('/admin/patients')
+  await expect(page).toHaveURL(/\/me$/)
+  await expect(page.getByRole('heading', { name: '我的健康总览' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /贺嘉树/ })).toBeVisible()
+})
